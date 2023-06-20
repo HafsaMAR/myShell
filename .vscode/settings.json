@@ -1,0 +1,15 @@
+{
+  // Use tabs instead of spaces
+  "editor.tabSize": 4,
+  "editor.insertSpaces": false,
+  "editor.detectIndentation": true,
+  "files.insertFinalNewline": true,
+  // Limit column width
+  "editor.wordWrap": "on",
+  "editor.wordWrapColumn": 80,
+  "C_Cpp.errorSquiggles": "Enabled",
+  "files.associations": {
+    "_getenv.C": "cpp",
+    "sstream": "c"
+  }
+}
