@@ -5,23 +5,19 @@
  * @variable: name of the environment variable
  * Return: the value of the environment variable
  */
-void get_env(CommandList *info)
+char *_getenv(char *variable, CommandList *cmd)
 {
-	int i = 0;
-	while (environ[i] != NULL)
+	int i;
+	/*char *firstoccurence;*/
+	for (i = 0; cmd->env[i] != NULL; i++)
 	{
-		i++;
+		if (strncmp(cmd->env[i], variable, strlen(variable)) == 0)
+		{
+			/*firstoccurence = strchr(cmd.env[i], '=');*/
+			return (cmd->env[i] + strlen(variable) + 1);
+		}
 	}
-	info->env = malloc((i + 1) * sizeof(char *));
-	if (info->env == NULL)
-	{
-		perror("Allocation error");
-	}
-	for (i = 0; environ[i] != NULL; i++)
-	{
-		info->env[i] = strdup(environ[i]);
-	}
-	info->env[i] = NULL;
+	return (NULL);
 }
 
 

@@ -50,10 +50,10 @@ void printCommands(CommandList *commandList)
 	}
 }
 
-char *command_path(char *cmd)
+char *command_path(char *cmd, CommandList *shell)
 {
 	struct stat st;
-	char *path = _getenv("PATH");
+	char *path = _getenv("PATH", shell);
 	char *command_path = myStrtok(path, ":");
 	char *command_pathcpy;
 	while (command_path)
@@ -81,7 +81,7 @@ char *is_command(CommandList *commandlist, int i)
 	if (command->count == 0)
 		return (NULL);
 	cmd = command->arguments[0];
-	command_check = command_path(cmd);
+	command_check = command_path(cmd, commandlist);
 	if (stat(cmd, &st) == 0)
 	{
 		return (cmd);
@@ -157,10 +157,9 @@ void cmd_check(CommandList *cmdlist)
 	}
 }
 
-void parse_cmd(char *command_line)
+void parse_cmd(char *command_line, CommandList commandlist)
 {
 	char *comment_pos = my_strchr(command_line, '#');
-	CommandList commandlist;
 	shellnode *node = malloc(sizeof(shellnode));
 	commandlist.count = 0;
 	if (node == NULL)
@@ -181,10 +180,12 @@ int main(void)
 {
 	ssize_t get = 0;
 	char *command_prompt = NULL;
+	CommandList commandlist;
 	size_t n = 0;
+	commandlist.runarg = 0;
 	while (1)
 	{
-		if (isatty(STDIN_FILENO))
+		if (isatty(STDIN_FILENO) && commandlist.runarg == 0)
 		{
 			my_puts("Cisfun $ ");
 		}
@@ -198,7 +199,7 @@ int main(void)
 		}
 		if (command_prompt[my_strlen(command_prompt) - 1] == '\n')
 			command_prompt[my_strlen(command_prompt) - 1] = '\0';
-		parse_cmd(command_prompt);
+		parse_cmd(command_prompt, commandlist);
 	}
 	if (command_prompt != NULL)
 		free(command_prompt);

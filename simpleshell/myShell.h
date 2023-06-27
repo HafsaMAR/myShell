@@ -21,19 +21,29 @@ typedef struct
 	int count;
 } Command;
 
+typedef struct Alias
+{
+	char *aliasname;
+	char *value; 
+} Alias;
+
 typedef struct
 {
 	Command commands[MAX_COMMANDS];
 	int command_check[MAX_COMMANDS];
 	int status;
 	char **env;
+	int runarg;
 	int count;
+	Alias *aliases;
+	int num_aliases;
 } CommandList;
+
 
 typedef struct builtin
 {
 	char *name;
-	void (*func)(CommandList);
+	void (*func)(CommandList *, int);
 }builtin;
 
 
@@ -55,8 +65,10 @@ typedef struct shellnode
 /* print function */
 void my_putchar(char);
 int my_puts(char *);
+int errputs(char *str);
+void errputchar(char c);
 /* commands*/
-void parse_cmd(char *command_line);
+
 /* execve */
 void fork_cmd(char *commandline, shellnode *head);
 int num_token(char *commandline);
@@ -75,7 +87,7 @@ char *myStrtok_r(char *str, char *delimiters, char **save_ptr, int *check_comman
 char *my_strcpy(char *d, const char *s);
 int my_strncmp(const char *s1, const char *s2, size_t n);
 /*functions*/
-char *_getenv(const char *variable);
+char *_getenv(char *variable, CommandList *cmd);
 void replaceFirstArguments(CommandList *commandList, const char *newValue, int index);
 /*structure nodes*/
 shellnode *createNode(const char *node);
@@ -88,4 +100,9 @@ void replaceDoublePointer(shellnode *node, char *newcommand);
 /* test_cmdlist*/
 char *command_path(char *command);
 char *is_command(CommandList *commandlist, int i);
+void parse_cmd(char *command_line, CommandList commandlist);
+/* builtins */
+void cmd_env(CommandList *cmd, int index);
+void cmd_exit(CommandList *cmd, int index);
+void cmd_alias(CommandList *cmd, int index);
 #endif
