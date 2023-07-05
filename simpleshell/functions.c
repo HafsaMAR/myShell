@@ -11,10 +11,10 @@ char *_getenv(char *variable, CommandList *cmd)
 	/*char *firstoccurence;*/
 	for (i = 0; cmd->env[i] != NULL; i++)
 	{
-		if (strncmp(cmd->env[i], variable, strlen(variable)) == 0)
+		if (strncmp(variable, cmd->env[i], my_strlen(variable)) == 0)
 		{
 			/*firstoccurence = strchr(cmd.env[i], '=');*/
-			return (cmd->env[i] + strlen(variable) + 1);
+			return (cmd->env[i] + my_strlen(variable) + 1);
 		}
 	}
 	return (NULL);

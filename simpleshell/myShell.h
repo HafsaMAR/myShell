@@ -79,6 +79,7 @@ char *myStrtok(char *str, const char *delim);
 char *my_strcpy(char *d, const char *s);
 int my_strlen(char *s);
 int my_strlen_const(const char *s);
+char *StrtokCommand(char *str, char *delimiters, char **save_ptr);
 /*string_manipulation2*/
 char *my_strchr(char *str, int chr);
 /*char *cmd_token(char *str, cmd *current);*/
@@ -98,10 +99,11 @@ void add_node(shellnode **head, const char *str);
 /* structure*/
 void replaceDoublePointer(shellnode *node, char *newcommand);
 /* test_cmdlist*/
-char *command_path(char *command);
+char *command_path(char *cmd, CommandList *shell);
 char *is_command(CommandList *commandlist, int i);
 void parse_cmd(char *command_line, CommandList commandlist);
 /* builtins */
+void get_environ(CommandList *info);
 void cmd_env(CommandList *cmd, int index);
 void cmd_exit(CommandList *cmd, int index);
 void cmd_alias(CommandList *cmd, int index);

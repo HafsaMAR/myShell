@@ -95,26 +95,7 @@ char *is_command(CommandList *commandlist, int i)
 	return (NULL);
 }
 
-/*void exec_cmd(CommandList *commandlist, int index)
-{
-	Command *cmd = &commandlist->commands[index];
-	pid_t child_pid;
-	int ret, wstatus;
-	child_pid = fork();
-	if (child_pid == 0)
-	{
-		ret = execve(cmd->arguments[0], cmd->arguments, environ);
-		if (ret == -1)
-		{
-			perror("Error execution\n");
-			_exit(ret);
-		}
-	}
-	else
-	{
-		wait(&wstatus);
-	}
-}*/
+
 
 void cmd_check(CommandList *cmdlist)
 {
@@ -173,7 +154,7 @@ void parse_cmd(char *command_line, CommandList commandlist)
 	}
 	tokenizeCommands(command_line, &commandlist);
 	cmd_check(&commandlist);
-	printCommands(&commandlist);
+
 }
 
 int main(void)
@@ -183,6 +164,7 @@ int main(void)
 	CommandList commandlist;
 	size_t n = 0;
 	commandlist.runarg = 0;
+	get_environ(&commandlist);
 	while (1)
 	{
 		if (isatty(STDIN_FILENO) && commandlist.runarg == 0)

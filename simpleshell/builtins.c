@@ -125,7 +125,7 @@ void cmd_cd(CommandList *cmd, int index)
 		path = _getenv("OLDPWD", cmd);
 		if (path)
 		{
-			my_putchar(path + '\0');
+			my_puts(path + '\0');
 		}
 		else
 		{
