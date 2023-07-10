@@ -53,11 +53,11 @@ void printCommands(CommandList *commandList)
 
 char *command_path(char *cmd)
 {
-	struct stat status;	
+	struct stat status;
 	char *path = malloc(sizeof(char) * 100);
 	if (path == NULL)
 	{
-		return(NULL);
+		return (NULL);
 	}
 	/*char *command_path, *command_pathcpy, *pathcpy;
 	pathcpy = strdup(path);
@@ -67,24 +67,28 @@ char *command_path(char *cmd)
 	{
 		command_pathcpy = strdup(command_path);*/
 
-		my_strcpy(path, "/usr/bin/");
- 		my_strcat(path, cmd);
-		if (stat(path, &status) == 0)
+	my_strcpy(path, "/usr/bin/");
+	my_strcat(path, cmd);
+	if (stat(path, &status) == 0)
+	{
+		/*if (pathcpy != NULL)
 		{
-			/*if (pathcpy != NULL)
-			{
-				free(pathcpy);
-				path = NULL;
-			}*/
-			return (path);
-		}
-		/*if (command_pathcpy)
-		{
-			free(command_pathcpy);
-			command_pathcpy = NULL;
-		}
-		command_path = myStrtok(NULL, ":");
-	}*/
+			free(pathcpy);
+			path = NULL;
+		}*/
+		return (path);
+	}
+	/*if (command_pathcpy)
+	{
+		free(command_pathcpy);
+		command_pathcpy = NULL;
+	}
+	command_path = myStrtok(NULL, ":");
+}*/
+	if (path)
+	{
+		free(path);
+	}
 	return (NULL);
 }
 
@@ -134,8 +138,8 @@ void cmd_check(CommandList *cmdlist)
 				if (ret == -1)
 				{
 					perror(cmd->arguments[0]);
+					_exit(ret);
 				}
-				_exit(ret);
 			}
 			else
 			{
@@ -159,7 +163,6 @@ void cmd_check(CommandList *cmdlist)
 		{
 			i++;
 		}
-
 	}
 }
 
@@ -175,6 +178,7 @@ void parse_cmd(char *command_line, CommandList commandlist)
 	}
 	tokenizeCommands(command_line, &commandlist);
 	cmd_check(&commandlist);
+	freeCommand(commandlist.commands);
 /*	command = &commandlist.commands[i];
 	for (i = 0; i < MAX_COMMANDS; i++)
 	{
@@ -210,7 +214,12 @@ int main(void)
 			command_prompt[my_strlen(command_prompt) - 1] = '\0';
 		parse_cmd(command_prompt, commandlist);
 	}
+	freeCommandList(&commandlist);
 	if (command_prompt != NULL)
+	{
 		free(command_prompt);
+		command_prompt = NULL;
+	}
+
 	return (0);
 }

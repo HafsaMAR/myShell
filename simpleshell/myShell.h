@@ -107,4 +107,9 @@ void get_environ(CommandList *info);
 void cmd_env(CommandList *cmd, int index);
 void cmd_exit(CommandList *cmd, int index);
 void cmd_alias(CommandList *cmd, int index);
+
+/* freeshell */
+void freeCommand(Command *command);
+void freeAlias(Alias *alias);
+void freeCommandList(CommandList *Commandlist);
 #endif
