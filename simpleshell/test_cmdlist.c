@@ -14,6 +14,7 @@ void tokenizeCommands(char *input, CommandList *commandList)
 	while ((token = myStrtok_r(rest, ";|&", &rest, &(commandList->command_check[commandList->count]))))
 	{
 		command.count = 0;
+
 		argRest = token;
 		argToken = myStrtok(argRest, " ");
 		while (argToken != NULL)
@@ -50,23 +51,40 @@ void printCommands(CommandList *commandList)
 	}
 }
 
-char *command_path(char *cmd, CommandList *shell)
+char *command_path(char *cmd)
 {
-	struct stat st;
-	char *path = _getenv("PATH", shell);
-	char *command_path = myStrtok(path, ":");
-	char *command_pathcpy;
+	struct stat status;	
+	char *path = malloc(sizeof(char) * 100);
+	if (path == NULL)
+	{
+		return(NULL);
+	}
+	/*char *command_path, *command_pathcpy, *pathcpy;
+	pathcpy = strdup(path);
+	command_path = myStrtok(pathcpy, ":");
+
 	while (command_path)
 	{
-		command_pathcpy = strdup(command_path);
-		my_strcat(command_pathcpy, "/");
-		my_strcat(command_pathcpy, cmd);
-		if (stat(command_pathcpy, &st) == 0)
+		command_pathcpy = strdup(command_path);*/
+
+		my_strcpy(path, "/usr/bin/");
+ 		my_strcat(path, cmd);
+		if (stat(path, &status) == 0)
 		{
-			return (command_pathcpy);
+			/*if (pathcpy != NULL)
+			{
+				free(pathcpy);
+				path = NULL;
+			}*/
+			return (path);
+		}
+		/*if (command_pathcpy)
+		{
+			free(command_pathcpy);
+			command_pathcpy = NULL;
 		}
 		command_path = myStrtok(NULL, ":");
-	}
+	}*/
 	return (NULL);
 }
 
@@ -81,7 +99,7 @@ char *is_command(CommandList *commandlist, int i)
 	if (command->count == 0)
 		return (NULL);
 	cmd = command->arguments[0];
-	command_check = command_path(cmd, commandlist);
+	command_check = command_path(cmd);
 	if (stat(cmd, &st) == 0)
 	{
 		return (cmd);
@@ -95,11 +113,9 @@ char *is_command(CommandList *commandlist, int i)
 	return (NULL);
 }
 
-
-
 void cmd_check(CommandList *cmdlist)
 {
-	int i = 0, ret, wstatus;
+	int i = 0, ret = 0, wstatus;
 	Command *cmd;
 	char /**argument,*/ *command_path;
 	pid_t child_pid;
@@ -131,31 +147,43 @@ void cmd_check(CommandList *cmdlist)
 		}
 		else
 		{
-			perror(cmd->arguments[0]);
-			perror(": command not found\n");
+			errputs(cmd->arguments[0]);
+			errputs(": command not found\n");
 			cmdlist->status = 127;
 		}
+		if (cmdlist->command_check[i] == 2 && command_path == NULL)
+		{
+			i++;
+		}
+		else if (cmdlist->command_check[i] == 1 && command_path != NULL)
+		{
+			i++;
+		}
+
 	}
 }
 
 void parse_cmd(char *command_line, CommandList commandlist)
 {
-	char *comment_pos = my_strchr(command_line, '#');
-	shellnode *node = malloc(sizeof(shellnode));
+	/*Command *command;
+	int i = 0;
+*/ char *comment_pos = my_strchr(command_line, '#');
 	commandlist.count = 0;
-	if (node == NULL)
-	{
-		perror("Error: Memory Allocation");
-		return;
-	}
 	if (comment_pos != NULL)
 	{
 		*comment_pos = '\0';
 	}
 	tokenizeCommands(command_line, &commandlist);
 	cmd_check(&commandlist);
-
-}
+/*	command = &commandlist.commands[i];
+	for (i = 0; i < MAX_COMMANDS; i++)
+	{
+		if (command->arguments[i])
+			free(command->arguments[i]);
+		command->count = 0;
+	}
+	commandlist.count = 0;
+*/}
 
 int main(void)
 {
@@ -171,7 +199,6 @@ int main(void)
 		{
 			my_puts("Cisfun $ ");
 		}
-
 		get = getline(&command_prompt, &n, stdin);
 		if (get == -1)
 		{

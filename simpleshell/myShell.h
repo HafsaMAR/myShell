@@ -99,7 +99,7 @@ void add_node(shellnode **head, const char *str);
 /* structure*/
 void replaceDoublePointer(shellnode *node, char *newcommand);
 /* test_cmdlist*/
-char *command_path(char *cmd, CommandList *shell);
+char *command_path(char *cmd);
 char *is_command(CommandList *commandlist, int i);
 void parse_cmd(char *command_line, CommandList commandlist);
 /* builtins */
