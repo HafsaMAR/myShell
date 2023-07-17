@@ -261,7 +261,7 @@ int main(void)
 
 	while ((nread = getline(&command_prompt, &n, stdin)) != -1)
 	{
-
+		commandlist.order += 1;
 		if (command_prompt[my_strlen(command_prompt) - 1] == '\n')
 			command_prompt[my_strlen(command_prompt) - 1] = '\0';
 		check = parse_cmd(command_prompt, commandlist);

@@ -41,6 +41,7 @@ typedef struct CommandList
 	Alias *aliases;
 	int num_aliases;
 	builtin *builtins;
+	int order;
 } CommandList;
 
 struct builtin
