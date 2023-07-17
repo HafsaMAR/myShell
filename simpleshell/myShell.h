@@ -15,19 +15,22 @@ extern char **environ;
 #define MAX_LENGTH 200
 #define MAX_COMMANDS 100
 #define MAX_ARGUMENTS 100
-typedef struct
+
+typedef struct Alias
+{
+	char *aliasname;
+	char *value;
+} Alias;
+
+typedef struct builtin builtin;
+
+typedef struct Command
 {
 	char *arguments[MAX_ARGUMENTS];
 	int count;
 } Command;
 
-typedef struct Alias
-{
-	char *aliasname;
-	char *value; 
-} Alias;
-
-typedef struct
+typedef struct CommandList
 {
 	Command commands[MAX_COMMANDS];
 	int command_check[MAX_COMMANDS];
@@ -37,42 +40,21 @@ typedef struct
 	int count;
 	Alias *aliases;
 	int num_aliases;
+	builtin *builtins;
 } CommandList;
 
-
-typedef struct builtin
+struct builtin
 {
 	char *name;
 	void (*func)(CommandList *, int);
-}builtin;
-
-
-typedef struct shellnode
-{
-	char **argv;
-	int cmd_count;
-	int status;
-	struct shellnode *next;
-} shellnode;
-
-#define SHELLNODE_INIT \
-	{                  \
-		NULL, 0, 0     \
-	}
-
-/* BUFFER */
+};
 
 /* print function */
 void my_putchar(char);
 int my_puts(char *);
 int errputs(char *str);
 void errputchar(char c);
-/* commands*/
 
-/* execve */
-void fork_cmd(char *commandline, shellnode *head);
-int num_token(char *commandline);
-char **copyStringToArgv(shellnode *node, int ac);
 /*string_manipulation*/
 bool is_delimiter(char c, const char *delim);
 char *myStrtok(char *str, const char *delim);
@@ -90,24 +72,24 @@ int my_strncmp(const char *s1, const char *s2, size_t n);
 /*functions*/
 char *_getenv(char *variable, CommandList *cmd);
 void replaceFirstArguments(CommandList *commandList, const char *newValue, int index);
-/*structure nodes*/
-shellnode *createNode(const char *node);
-void insertNode(shellnode **head, const char *node);
-void freelist(shellnode *head);
-void displayPaths(const shellnode *head);
-void add_node(shellnode **head, const char *str);
-/* structure*/
-void replaceDoublePointer(shellnode *node, char *newcommand);
+char *_itoa(int num);
+
 /* test_cmdlist*/
 char *command_path(char *cmd);
 char *is_command(CommandList *commandlist, int i);
-void parse_cmd(char *command_line, CommandList commandlist);
+int parse_cmd(char *command_line, CommandList commandlist);
 /* builtins */
 void get_environ(CommandList *info);
+void cmd_setenv(CommandList *shell, int index);
 void cmd_env(CommandList *cmd, int index);
 void cmd_exit(CommandList *cmd, int index);
+void cmd_unsetenv(CommandList *cmd, int index);
+void update_env(char *variable, char *value, CommandList *info);
+void cmd_cd(CommandList *cmd, int index);
+void print_alias(CommandList *cmd, char *alias_name);
+void print_aliasList(CommandList *cmd);
 void cmd_alias(CommandList *cmd, int index);
-
+builtin *update_builtins();
 /* freeshell */
 void freeCommand(Command *command);
 void freeAlias(Alias *alias);

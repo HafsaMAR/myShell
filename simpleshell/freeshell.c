@@ -5,15 +5,18 @@ void freeCommand(Command *command)
 	int i;
 	for (i = 0; i < command->count; i++)
 	{
-		free(command->arguments[i]);
+		if (command->arguments[i] != NULL)
+			free(command->arguments[i]);
 	}
 	command->count = 0;
 }
 
 void freeAlias(Alias *alias)
 {
-	free(alias->aliasname);
-	free(alias->value);
+	if (alias->aliasname != NULL)
+		free(alias->aliasname);
+	if (alias->value != NULL)
+		free(alias->value);
 }
 
 void freeCommandList(CommandList *Commandlist)
@@ -25,7 +28,8 @@ void freeCommandList(CommandList *Commandlist)
 	}
 	for (i = 0; Commandlist->env[i] != NULL; i++)
 	{
-		free(Commandlist->env[i]);
+		if (Commandlist->env[i] != NULL)
+			free(Commandlist->env[i]);
 	}
 	free(Commandlist->env);
 	for (i = 0; i < Commandlist->num_aliases; i++)

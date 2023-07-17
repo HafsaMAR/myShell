@@ -140,38 +140,74 @@ void cmd_cd(CommandList *cmd, int index)
 		update_env("OLDPWD", oldpwd, cmd);
 	}
 }
-void set_alias(CommandList *cmd, int index)
+void set_alias(CommandList *cmd, char *arg)
 {
-	Command arg = cmd->commands[index];
 	Alias *alias = cmd->aliases;
-	int i;
-	char *argcpy = strdup(arg.arguments[1]);
-	char *name = myStrtok(argcpy, "=");
-	char *startptr = my_strchr(arg.arguments[1], '\'');
-	char *endptr = NULL;
+	int i, check = 0;
+	char *temp, *equalsign = strchr(arg, '=');
+	size_t aliaslen = equalsign - arg;
+	size_t valuelen = strlen(equalsign + 1);
+
 	for (i = 0; i < cmd->num_aliases; i++)
 	{
-		if (my_strncmp(alias->aliasname, arg.arguments[1], my_strlen(alias->aliasname) == 0))
+		if (strncmp(arg, alias->aliasname, aliaslen) == 0)
 		{
-			if (startptr)
+			if (strlen(alias[i].value) < valuelen)
 			{
-				endptr = my_strchr(startptr, '\'');
-				strncpy(alias->value, startptr + 1, endptr - startptr - 1);
-				if (argcpy != NULL)
+				temp = realloc(alias[i].value, valuelen + 1);
+				if (temp != NULL)
 				{
-					free(argcpy);
+					alias[i].value = temp;
 				}
-				return;
+				else
+				{
+					perror("Memory allocation failed.");
+					return;
+				}
 			}
+			else
+			{
+				free(alias[i].value);
+				alias[i].value = malloc(valuelen + 1);
+				if (alias[i].value == NULL)
+				{
+					perror("Memory allocation failed.");
+					return;
+				}
+			}
+			strncpy(alias[i].value, equalsign + 1, valuelen);
+			alias[i].value[valuelen] = '\0';
+			check = 1;
+			break;
 		}
 	}
-	my_strcpy(alias->aliasname, name);
-	if (startptr)
+	if (check == 0)
 	{
-		endptr = my_strchr(startptr, '\'');
-		strncpy(alias->value, startptr + 1, endptr - startptr - 1);
+		cmd->num_aliases += 1;
+		alias = realloc(alias, cmd->num_aliases * sizeof(Alias));
+		if (alias == NULL)
+		{
+			perror("Memory allocation failed.");
+			return;
+		}
+		alias[cmd->num_aliases - 1].aliasname = malloc(aliaslen + 1);
+		alias[cmd->num_aliases - 1].value = malloc(valuelen + 1);
+		if (alias[cmd->num_aliases - 1].aliasname == NULL || alias[cmd->num_aliases - 1].value == NULL)
+		{
+			perror("Memory allocation failed.");
+			return;
+		}
+
+		strncpy(alias[cmd->num_aliases - 1].aliasname, arg, aliaslen);
+		strncpy(alias[cmd->num_aliases - 1].value, equalsign + 1, valuelen);
+		alias[cmd->num_aliases - 1].aliasname[aliaslen] = '\0';
+		alias[cmd->num_aliases - 1].value[valuelen] = '\0';
+
+		cmd->aliases = alias;
 	}
 }
+
+/* TODO: Define a function to free the memory allocated for the aliases.*/
 
 void print_alias(CommandList *cmd, char *alias_name)
 {
@@ -182,10 +218,11 @@ void print_alias(CommandList *cmd, char *alias_name)
 		alias = cmd->aliases[i];
 		if (strcmp(alias.aliasname, alias_name) == 0)
 		{
+			my_puts("alias ");
 			my_puts(alias.aliasname);
 			my_puts("=\'");
 			my_puts(alias.value);
-			my_putchar('\'');
+			my_puts("\'\n");
 			cmd->status = 0;
 			return;
 		}
@@ -211,7 +248,7 @@ void print_aliasList(CommandList *cmd)
 void cmd_alias(CommandList *cmd, int index)
 {
 	Command current_cmd = cmd->commands[index];
-	int i = 0;
+	int i = 1;
 
 	if (current_cmd.count == 1)
 	{
@@ -219,17 +256,17 @@ void cmd_alias(CommandList *cmd, int index)
 	}
 	else
 	{
-		if (current_cmd.count == 2 && my_strchr("=", *current_cmd.arguments[1]) != NULL)
+		while (i < current_cmd.count)
 		{
-			set_alias(cmd, index);
-		}
-		else
-		{
-			i = 1;
-			while (current_cmd.arguments[i] != NULL)
+			if (my_strchr(current_cmd.arguments[i], '=') != NULL)
+			{
+				set_alias(cmd, current_cmd.arguments[i]);
+			}
+			else
 			{
 				print_alias(cmd, current_cmd.arguments[i]);
 			}
+			i++;
 		}
 	}
 }
