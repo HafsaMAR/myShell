@@ -196,8 +196,11 @@ void cmd_check(CommandList *cmdlist)
 
 			else
 			{
+				errputs("./hsh: ");
+				errputs(_itoa(cmdlist->order));
+				errputs(": ");
 				errputs(cmd->arguments[0]);
-				errputs(": command not found\n");
+				errputs(": not found\n");
 				cmdlist->status = 127;
 			}
 		}
@@ -217,12 +220,12 @@ void cmd_check(CommandList *cmdlist)
 	}
 }
 
-int parse_cmd(char *command_line, CommandList commandlist)
+int parse_cmd(char *command_line, CommandList *commandlist)
 {
 	/*Command *command = commandlist.commands[];
 	int i = 0;
 */ char *comment_pos;
-	commandlist.count = 0;
+	commandlist->count = 0;
 	if (command_line[0] == '#')
 	{
 		*command_line = '\0';
@@ -232,8 +235,8 @@ int parse_cmd(char *command_line, CommandList commandlist)
 	{
 		*comment_pos = '\0';
 	}
-	tokenizeCommands(command_line, &commandlist);
-	cmd_check(&commandlist);
+	tokenizeCommands(command_line, commandlist);
+	cmd_check(commandlist);
 	/*	command = &commandlist.commands[i];
 		for (i = 0; i < MAX_COMMANDS; i++)
 		{
@@ -243,7 +246,7 @@ int parse_cmd(char *command_line, CommandList commandlist)
 		}
 		commandlist.count = 0;
 	*/
-	return (commandlist.runarg);
+	return (commandlist->runarg);
 }
 
 int main(void)
@@ -264,7 +267,7 @@ int main(void)
 		commandlist.order += 1;
 		if (command_prompt[my_strlen(command_prompt) - 1] == '\n')
 			command_prompt[my_strlen(command_prompt) - 1] = '\0';
-		check = parse_cmd(command_prompt, commandlist);
+		check = parse_cmd(command_prompt, &commandlist);
 		if (check == 1)
 			break;
 		if (isatty(STDIN_FILENO))

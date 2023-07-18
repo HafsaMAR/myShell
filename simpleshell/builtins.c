@@ -129,7 +129,7 @@ void cmd_cd(CommandList *cmd, int index)
 		}
 		else
 		{
-			errputs("cd: OLDPWD not set");
+			/*errputs("cd: OLDPWD not set");*/
 			path = oldpwd;
 		}
 	}
@@ -218,7 +218,6 @@ void print_alias(CommandList *cmd, char *alias_name)
 		alias = cmd->aliases[i];
 		if (strcmp(alias.aliasname, alias_name) == 0)
 		{
-			my_puts("alias ");
 			my_puts(alias.aliasname);
 			my_puts("=\'");
 			my_puts(alias.value);

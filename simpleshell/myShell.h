@@ -78,7 +78,7 @@ char *_itoa(int num);
 /* test_cmdlist*/
 char *command_path(char *cmd);
 char *is_command(CommandList *commandlist, int i);
-int parse_cmd(char *command_line, CommandList commandlist);
+int parse_cmd(char *command_line, CommandList *commandlist);
 /* builtins */
 void get_environ(CommandList *info);
 void cmd_setenv(CommandList *shell, int index);
