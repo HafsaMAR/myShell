@@ -13,83 +13,6 @@ char *my_strchr(char *str, int chr)
 	return (str);
 }
 
-/*char *cmd_token(char *str, CommandList *current)
-
-{
-	static char *buffer;
-	char *token;
-
-	if (str != NULL)
-	{
-		buffer = str;
-	}
-	else if (buffer == NULL || *buffer == '\0')
-	{
-		return (NULL);
-	}
-	while (*buffer != '\0' && my_strchr(";", *buffer) != 0)
-	{
-		buffer++;
-	}
-	if (*buffer == '\0')
-		return (NULL);
-	token = buffer;*/
-/* Find the end of the token */
-/*while (*buffer != '\0' && my_strchr(";", *buffer) == 0)
-{
-	if (*buffer == '|')
-	{
-		*buffer = '\0';
-		current->check_cmd = '|';
-		break;
-	}
-	else if (*buffer == '&')
-	{
-		*buffer = '\0';
-		current->check_cmd = '&';
-		break;
-	}
-	else
-	{
-		buffer++;
-	}
-}
-if (*buffer != '\0')
-{
-	*buffer++ = '\0';
-}
-else
-{
-	buffer = NULL;
-}
-return (token);
-}*/
-
-/*int skip_operator(char *str, CommandList cmd)
-{
-	if (*str && my_strchr("|", *str))
-	{
-		str++;
-		if (*str && my_strchr("|", *str))
-		{
-			str++;
-			cmd.command_check = 0;
-			return (cmd.command_check);
-		}
-	}
-	else if (*str && my_strchr("&", *str))
-	{
-		str++;
-		if (*str && my_strchr("&", *str))
-		{
-			str++;
-			cmd.command_check = 1;
-			return (cmd.command_check);
-		}
-	}
-	return (cmd.command_check);
-}*/
-
 char *operatorTokenizer(char *str, char *delimiters, char **save_ptr)
 {
 	char *token = str;
@@ -179,6 +102,7 @@ char *my_strcpy(char *d, const char *s)
 int my_strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t i;
+	
 	for (i = 0; i < n; i++)
 	{
 		if (s1[i] != s2[i])

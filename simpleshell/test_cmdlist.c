@@ -4,6 +4,22 @@
 #define MAX_ARGUMENTS 100
 /*#define MAX_LENGTH 100*/
 
+void printCommands(CommandList *commandList)
+{
+	int i, j;
+	printf("Commands:\n");
+	for (i = 0; i < commandList->count; i++)
+	{
+		printf("Command %d:\n", i + 1);
+		printf("command-check = %d\n", commandList->command_check[i]);
+		for (j = 0; j < commandList->commands[i].count; j++)
+		{
+			printf("Argument %d: %s\n", j + 1, commandList->commands[i].arguments[j]);
+		}
+		printf("\n");
+	}
+}
+
 char *special_char_check(char *argtoken, CommandList *CommandList)
 {
 	pid_t pid;
@@ -45,7 +61,6 @@ void tokenizeCommands(char *input, CommandList *commandList)
 	while ((token = myStrtok_r(rest, ";|&", &rest, &(commandList->command_check[commandList->count]))))
 	{
 		command.count = 0;
-
 		argRest = token;
 		argToken = myStrtok(argRest, " ");
 		while (argToken != NULL)
@@ -53,7 +68,7 @@ void tokenizeCommands(char *input, CommandList *commandList)
 			if (command.count < MAX_ARGUMENTS)
 			{
 				argToken = special_char_check(argToken, commandList);
-				command.arguments[command.count++] = strdup(argToken);
+				command.arguments[command.count++] = my_strdup(argToken);
 			}
 			argToken = myStrtok(NULL, " ");
 		}
@@ -67,22 +82,6 @@ void tokenizeCommands(char *input, CommandList *commandList)
 	}
 }
 
-void printCommands(CommandList *commandList)
-{
-	int i, j;
-	printf("Commands:\n");
-	for (i = 0; i < commandList->count; i++)
-	{
-		printf("Command %d:\n", i + 1);
-		printf("command-check = %d\n", commandList->command_check[i]);
-		for (j = 0; j < commandList->commands[i].count; j++)
-		{
-			printf("Argument %d: %s\n", j + 1, commandList->commands[i].arguments[j]);
-		}
-		printf("\n");
-	}
-}
-
 char *command_path(char *cmd)
 {
 	struct stat status;
@@ -90,9 +89,9 @@ char *command_path(char *cmd)
 
 	char *command_path, *pathcpy, *command_pathcpy;
 	path = getenv("PATH");
-	pathcpy = strdup(path);
+	pathcpy = my_strdup(path);
 	command_path = myStrtok(pathcpy, ":");
-	command_pathcpy = malloc(my_strlen(pathcpy));
+	command_pathcpy = malloc(my_strlen(pathcpy) + my_strlen(cmd) + 2);
 	while (command_path)
 	{
 		my_strcpy(command_pathcpy, command_path);
@@ -127,17 +126,19 @@ char *is_command(CommandList *commandlist, int i)
 	command = &commandlist->commands[i];
 	if (command->count == 0)
 		return (NULL);
-	cmd = command->arguments[0];
+	cmd = my_strdup(command->arguments[0]);
 	if (stat(cmd, &st) == 0)
 	{
 		return (cmd);
 	}
 	else if ((command_check = command_path(cmd)) != NULL)
 	{
-		/* TODO : change the first argument of each Command structure to a command_check*/
-		/* use ReplaceFirstArg function */
+		free(cmd);
 		return (command_check);
 	}
+	free(cmd);
+	if (command_check)
+		free(command_check);
 	return (NULL);
 }
 
@@ -162,7 +163,7 @@ void cmd_check(CommandList *cmdlist)
 {
 	int i = 0, ret = 0, wstatus, check;
 	Command *cmd;
-	char /**argument,*/ *command_path;
+	char *command_path = NULL;
 	pid_t child_pid;
 	for (i = 0; i < cmdlist->count; i++)
 	{
@@ -170,30 +171,23 @@ void cmd_check(CommandList *cmdlist)
 		check = builtin_cmd(cmdlist, i);
 		if (check > 5)
 		{
-			/*argument = cmd->arguments[0];*/
-			/* check if cmdlist->command->argument[0] == builtin->name exec builtin function*/
 			command_path = is_command(cmdlist, i);
 			if (command_path != NULL)
 			{
 				child_pid = fork();
 				if (child_pid == 0)
 				{
-					ret = execve(command_path, cmd->arguments, environ);
-					if (ret == -1)
-					{
-						perror(cmd->arguments[0]);
+					if ((ret = execve(command_path, cmd->arguments, environ)) == -1)
 						_exit(ret);
-					}
 				}
 				else
 				{
+					free(command_path);
 					wait(&wstatus);
-					/* Get the exit status of the child */
 					if (WIFEXITED(wstatus))
 						cmdlist->status = WEXITSTATUS(wstatus);
 				}
 			}
-
 			else
 			{
 				errputs("./hsh: ");
@@ -205,18 +199,9 @@ void cmd_check(CommandList *cmdlist)
 			}
 		}
 		if (cmdlist->command_check[i] == 2 && command_path == NULL)
-		{
 			i++;
-		}
 		else if (cmdlist->command_check[i] == 1 && command_path != NULL)
-		{
 			i++;
-		}
-		/*if (command_path)
-		{
-			free(command_path);
-			command_path = NULL;
-		}*/
 	}
 }
 
@@ -237,15 +222,6 @@ int parse_cmd(char *command_line, CommandList *commandlist)
 	}
 	tokenizeCommands(command_line, commandlist);
 	cmd_check(commandlist);
-	/*	command = &commandlist.commands[i];
-		for (i = 0; i < MAX_COMMANDS; i++)
-		{
-			if (command->arguments[i])
-				free(command->arguments[i]);
-			command->count = 0;
-		}
-		commandlist.count = 0;
-	*/
 	return (commandlist->runarg);
 }
 
@@ -268,6 +244,7 @@ int main(void)
 		if (command_prompt[my_strlen(command_prompt) - 1] == '\n')
 			command_prompt[my_strlen(command_prompt) - 1] = '\0';
 		check = parse_cmd(command_prompt, &commandlist);
+
 		if (check == 1)
 			break;
 		if (isatty(STDIN_FILENO))

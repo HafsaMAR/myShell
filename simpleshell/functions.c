@@ -82,3 +82,61 @@ char *_itoa(int num)
 	}
 	return (str);
 }
+
+void *my_realloc(void *ptr, size_t new_size, size_t old_size)
+{
+	void *new_ptr;
+	size_t i, test_size = (old_size < new_size) ? old_size : new_size;
+	char *src, *dest;
+
+	if (new_size == 0)
+	{
+		free(ptr);
+		return (NULL);
+	}
+	if (ptr == NULL)
+		return (malloc(new_size));
+
+	new_ptr = malloc(new_size);
+	if (new_ptr == NULL)
+	{
+		return (NULL);
+	}
+	src = (char*)ptr;
+	dest = (char*)new_ptr;
+	for (i = 0; i < test_size; i++)
+	{
+		dest[i] = src[i];
+	}	
+	free(ptr);
+	return (new_ptr);
+}
+
+int _atoi(char *str)
+{
+	int result = 0;
+	bool is_negative = false;
+
+	if (*str == '-')
+	{
+		is_negative = true;
+		str++;
+	}
+	while(*str != '\0')
+	{
+		if (*str >= '0' && *str <= '9')
+		{
+			result = result * 10 + (*str - '0');
+		}
+		else
+		{
+			break;
+		}
+		str++;
+	}
+	if (is_negative)
+	{
+		result *= -1;
+	}
+	return (result);
+}

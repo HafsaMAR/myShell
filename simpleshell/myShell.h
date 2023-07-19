@@ -74,6 +74,8 @@ int my_strncmp(const char *s1, const char *s2, size_t n);
 char *_getenv(char *variable, CommandList *cmd);
 void replaceFirstArguments(CommandList *commandList, const char *newValue, int index);
 char *_itoa(int num);
+void *my_realloc(void *ptr, size_t new_size, size_t old_size);
+int _atoi(char* str);
 
 /* test_cmdlist*/
 char *command_path(char *cmd);
@@ -95,4 +97,7 @@ builtin *update_builtins();
 void freeCommand(Command *command);
 void freeAlias(Alias *alias);
 void freeCommandList(CommandList *Commandlist);
+/* str_manipulation3*/
+char *my_strncpy(char *dest, char *src, size_t n);
+char *my_strdup(char *str);
 #endif

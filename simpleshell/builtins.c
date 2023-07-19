@@ -15,7 +15,7 @@ void get_environ(CommandList *info)
 	}
 	for (i = 0; environ[i] != NULL; i++)
 	{
-		info->env[i] = strdup(environ[i]);
+		info->env[i] = my_strdup(environ[i]);
 	}
 	info->env[i] = NULL;
 }
@@ -38,7 +38,7 @@ void cmd_setenv(CommandList *shell, int index)
 	}
 	if (check == 0)
 	{
-		shell->env = realloc(shell->env, i + 1);
+		shell->env = my_realloc(shell->env, i + 1, i);
 		shell->env[i] = malloc(my_strlen(command->arguments[1]) + my_strlen(command->arguments[2]) + 2);
 		my_strcpy(shell->env[i], command->arguments[1]);
 		my_strcat(shell->env[i], "=");
@@ -49,19 +49,38 @@ void cmd_setenv(CommandList *shell, int index)
 void cmd_exit(CommandList *cmd, int index)
 {
 	Command *arg = &cmd->commands[index];
+	int value;
 	if (arg->count == 1)
 	{
 		cmd->status = 0;
 		cmd->runarg = 1;
 	}
-	else if (arg->count == 2 && arg->arguments[1] != NULL)
+	else if (arg->count == 2)
 	{
-		cmd->status = atoi(arg->arguments[1]);
+		value = _atoi(arg->arguments[1]);
+		if (value > 0 || my_strncmp(arg->arguments[1], "0", 1) == 0)
+		{
+			cmd->status = value;
+		}
+		else
+		{
+			errputs("./hsh: ");
+			errputs(_itoa(cmd->order));
+			errputs(": exit: Illegal number: ");
+			errputs(arg->arguments[1]);
+			errputchar('\n');
+			cmd->status = 2;
+		}
 		cmd->runarg = 1;
+		return;
 	}
 	else
 	{
-		perror("Usage: exit status\n");
+		if (arg->arguments[arg->count] && my_strncmp(arg->arguments[arg->count], "exit", 4) == 0)
+		{
+			cmd->status = 2;
+			cmd->runarg = 1;
+		}
 	}
 }
 void cmd_env(CommandList *cmd, int index)
@@ -154,7 +173,7 @@ void set_alias(CommandList *cmd, char *arg)
 		{
 			if (strlen(alias[i].value) < valuelen)
 			{
-				temp = realloc(alias[i].value, valuelen + 1);
+				temp = my_realloc(alias[i].value, valuelen + 1, my_strlen(alias[i].value));
 				if (temp != NULL)
 				{
 					alias[i].value = temp;
@@ -175,7 +194,7 @@ void set_alias(CommandList *cmd, char *arg)
 					return;
 				}
 			}
-			strncpy(alias[i].value, equalsign + 1, valuelen);
+			my_strncpy(alias[i].value, equalsign + 1, valuelen);
 			alias[i].value[valuelen] = '\0';
 			check = 1;
 			break;
@@ -184,7 +203,7 @@ void set_alias(CommandList *cmd, char *arg)
 	if (check == 0)
 	{
 		cmd->num_aliases += 1;
-		alias = realloc(alias, cmd->num_aliases * sizeof(Alias));
+		alias = my_realloc(alias, cmd->num_aliases * sizeof(Alias), (cmd->num_aliases - 1) * sizeof(Alias));
 		if (alias == NULL)
 		{
 			perror("Memory allocation failed.");
@@ -198,8 +217,8 @@ void set_alias(CommandList *cmd, char *arg)
 			return;
 		}
 
-		strncpy(alias[cmd->num_aliases - 1].aliasname, arg, aliaslen);
-		strncpy(alias[cmd->num_aliases - 1].value, equalsign + 1, valuelen);
+		my_strncpy(alias[cmd->num_aliases - 1].aliasname, arg, aliaslen);
+		my_strncpy(alias[cmd->num_aliases - 1].value, equalsign + 1, valuelen);
 		alias[cmd->num_aliases - 1].aliasname[aliaslen] = '\0';
 		alias[cmd->num_aliases - 1].value[valuelen] = '\0';
 
