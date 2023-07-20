@@ -1,8 +1,14 @@
 #include "myShell.h"
 
+/**
+ * freeCommand - function that frees the Command structure
+ * @command: pointer to structure to be freed
+ * Return: void
+*/
 void freeCommand(Command *command)
 {
 	int i;
+
 	for (i = 0; i < command->count; i++)
 	{
 		if (command->arguments[i] != NULL)
@@ -11,6 +17,11 @@ void freeCommand(Command *command)
 	command->count = 0;
 }
 
+/**
+ * freeAlias - function that free the Alias structure
+ * @alias: pointer to Alias structure
+ * Return: void
+*/
 void freeAlias(Alias *alias)
 {
 	if (alias->aliasname != NULL)
@@ -19,9 +30,16 @@ void freeAlias(Alias *alias)
 		free(alias->value);
 }
 
+/**
+ * freeCommandList - function that frees all the structure
+ * @Commandlist: pointer to Commandlist structure to be freed
+ * Return: void
+*/
+
 void freeCommandList(CommandList *Commandlist)
 {
 	int i;
+
 	for (i = 0; i < Commandlist->count; i++)
 	{
 		freeCommand(&Commandlist->commands[i]);

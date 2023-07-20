@@ -3,6 +3,7 @@
 /**
  * _getenv - function that works similarly to the library function
  * @variable: name of the environment variable
+ * @cmd: pointer to CommandList structure
  * Return: the value of the environment variable
  */
 char *_getenv(char *variable, CommandList *cmd)
@@ -20,18 +21,11 @@ char *_getenv(char *variable, CommandList *cmd)
 	return (NULL);
 }
 
-void replaceFirstArguments(CommandList *commandList, const char *newValue, int index)
-{
-	Command *command;
-	if (commandList == NULL)
-		return;
-	command = &commandList->commands[index];
-	if (command->count > 0)
-	{
-		my_strcpy(command->arguments[0], newValue);
-	}
-}
-
+/**
+ * _itoa - function that convert from int to array
+ * @num: int num to convert
+ * Return: string result
+*/
 char *_itoa(int num)
 {
 	int sign = (num < 0) ? -1 : 1;
@@ -40,8 +34,7 @@ char *_itoa(int num)
 
 	num *= sign;
 	temp = num;
-	do
-	{
+	do {
 		len++;
 		temp /= 10;
 	} while (temp > 0);
@@ -51,29 +44,21 @@ char *_itoa(int num)
 		len += 1;
 		str = malloc(sizeof(char) * (len + 1));
 		if (str == NULL)
-		{
-			my_puts("Memory allocation failed.\n");
-			return NULL;
-		}
+			return (NULL);
 	}
 	else
 	{
 
 		str = malloc(sizeof(char) * (len + 1));
 		if (str == NULL)
-		{
-			my_puts("Memory allocation failed.\n");
-			return NULL;
-		}
+			return (NULL);
 	}
 	str[len] = '\0';
 	while (len > 0)
 	{
 		len--;
 		if (sign == -1 && len == 0)
-		{
 			str[len] = '-';
-		}
 		else
 		{
 			str[len] = num % 10 + '0';
@@ -83,6 +68,13 @@ char *_itoa(int num)
 	return (str);
 }
 
+/**
+ * my_realloc - function similar to library realloc function
+ * @ptr: pointer to object
+ * @new_size: new size of the object pointed to by ptr
+ * @old_size: it old size
+ * Return: pointer to the new object which size is reallocated
+*/
 void *my_realloc(void *ptr, size_t new_size, size_t old_size)
 {
 	void *new_ptr;
@@ -102,16 +94,21 @@ void *my_realloc(void *ptr, size_t new_size, size_t old_size)
 	{
 		return (NULL);
 	}
-	src = (char*)ptr;
-	dest = (char*)new_ptr;
+	src = (char *)ptr;
+	dest = (char *)new_ptr;
 	for (i = 0; i < test_size; i++)
 	{
 		dest[i] = src[i];
-	}	
+	}
 	free(ptr);
 	return (new_ptr);
 }
 
+/**
+ * _atoi - function similar to atoi
+ * @str: string to be converted to number
+ * Return: number
+*/
 int _atoi(char *str)
 {
 	int result = 0;
@@ -122,7 +119,7 @@ int _atoi(char *str)
 		is_negative = true;
 		str++;
 	}
-	while(*str != '\0')
+	while (*str != '\0')
 	{
 		if (*str >= '0' && *str <= '9')
 		{

@@ -27,17 +27,11 @@ char *myStrtok(char *str, const char *delim)
 	char *token;
 
 	if (str != NULL)
-	{
 		buffer = str;
-	}
 	else if (buffer == NULL || *buffer == '\0')
-	{
 		return (NULL);
-	}
 	while (*buffer != '\0' && is_delimiter(*buffer, delim))
-	{
 		buffer++;
-	}
 	if (*buffer == '\0')
 		return (NULL);
 	token = buffer; /* Find the end of the token */
@@ -53,12 +47,10 @@ char *myStrtok(char *str, const char *delim)
 			if (*buffer == '"')
 			{
 				buffer++;
-			}						
+			}
 		}
 		else
-		{
 			buffer++;
-		}
 	}
 	if (*buffer != '\0')
 	{
@@ -116,23 +108,3 @@ int my_strlen(char *s)
 	}
 	return (longt);
 }
-
-/**
- * my_strlen - returns the length of a string
- * @s: const string
- * Return: length
- */
-int my_strlen_const(const char *s)
-{
-	int longt = 0;
-
-	if (s == NULL)
-		return (0);
-	while (*s != '\0')
-	{
-		longt++;
-		s++;
-	}
-	return (longt);
-}
-

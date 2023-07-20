@@ -40,6 +40,12 @@ int my_puts(char *str)
 	return (byte);
 }
 
+/**
+ * errputchar - funntion for printing char to stderr
+ * @c: character to be printed
+ * Return: void
+*/
+
 void errputchar(char c)
 {
 	static char BUFFER[SIZE_BUFFER];
@@ -60,6 +66,12 @@ void errputchar(char c)
 	}
 }
 
+
+/**
+ * errputs - function that prints strings to stderr
+ * @str: string to be printed
+ * Return: int or EOF
+*/
 int errputs(char *str)
 {
 	int byte;
@@ -70,4 +82,21 @@ int errputs(char *str)
 		return (EOF);
 	}
 	return (byte);
+}
+
+/**
+ * errprint - function thar print an error message
+ * @cmdlist: structure containing the info of the shell program
+ * @i: index of the function executed
+*/
+
+void errprint(CommandList *cmdlist, int i)
+{
+	Command *cmd = &cmdlist->commands[i];
+
+	errputs("./hsh: ");
+	errputs(_itoa(cmdlist->order));
+	errputs(": ");
+	errputs(cmd->arguments[0]);
+	errputs(": not found\n");
 }

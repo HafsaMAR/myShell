@@ -1,5 +1,6 @@
 #include "myShell.h"
 /**
+ * my_strchr - function similar to the library strchr func
  * @str: pointer to the string to search
  * @chr: character to search for
  * Return: Pointer to the first occurrence of chr in str or NULL otherwise
@@ -13,28 +14,22 @@ char *my_strchr(char *str, int chr)
 	return (str);
 }
 
-char *operatorTokenizer(char *str, char *delimiters, char **save_ptr)
-{
-	char *token = str;
-	while (*str && !my_strchr(delimiters, *str))
-		str++;
-	/* Check if the end of the string */
-	if (*str == '\0')
-	{
-		*save_ptr = str;
-		return (token);
-	}
-	*str = '\0';
-	*save_ptr = str + 1;
-	return (token);
-}
-char *myStrtok_r(char *str, char *delimiters, char **save_ptr, int *check_command)
+/**
+ * myStrtok_r - function similar to strtok_r function
+ * @str: string tokenized
+ * @delimiters: string containing the delimiters
+ * @save_ptr: pointer to a char pointer that stores the context between calls
+ * @check_command: takes value 0, 1 or 2 depending on separators of the input
+ * Return: pointer to the token's first character on (success) / NULL otherwise
+*/
+
+char *myStrtok_r(char *str, char *delimiters, char **save_ptr,
+int *check_command)
 {
 	char *token;
-	/*check if input is NULL*/
+
 	if (str == NULL)
 	{
-		/* Use saved pointer save_ptr*/
 		str = *save_ptr;
 	}
 	if (strstr(str, "||"))
@@ -49,25 +44,19 @@ char *myStrtok_r(char *str, char *delimiters, char **save_ptr, int *check_comman
 	{
 		*check_command = 0;
 	}
-	/* Skip leading delimiters*/
 	while (*str && my_strchr(delimiters, *str))
 	{
 		str++;
 	}
-	/* Check if we have reached the end of the string*/
-
 	if (*str == '\0')
 	{
 		*save_ptr = str;
 		return (NULL);
 	}
-
-	/* Find the end of the token*/
 	token = str;
 
 	while (*str && (!my_strchr(delimiters, *str)))
 		str++;
-	/* Check if the end of the string */
 	if (*str == '\0')
 	{
 		*save_ptr = str;
@@ -99,10 +88,17 @@ char *my_strcpy(char *d, const char *s)
 	return (d);
 }
 
+/**
+ * my_strncmp - function similar to library strnmcp
+ * @s1: first NULL terminated string to compare
+ * @s2: second NULL terminated string to compare with
+ * @n: The maximum number of characters to compare
+ * Return: 0 if equal, negative value if s1 > s2, positive otherwise
+*/
 int my_strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t i;
-	
+
 	for (i = 0; i < n; i++)
 	{
 		if (s1[i] != s2[i])
