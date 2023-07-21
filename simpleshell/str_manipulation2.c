@@ -21,10 +21,10 @@ char *my_strchr(char *str, int chr)
  * @save_ptr: pointer to a char pointer that stores the context between calls
  * @check_command: takes value 0, 1 or 2 depending on separators of the input
  * Return: pointer to the token's first character on (success) / NULL otherwise
-*/
+ */
 
 char *myStrtok_r(char *str, char *delimiters, char **save_ptr,
-int *check_command)
+				 int *check_command)
 {
 	char *token;
 
@@ -88,13 +88,27 @@ char *my_strcpy(char *d, const char *s)
 	return (d);
 }
 
+int my_strcmp(char *s1, char *s2)
+{
+	size_t i = 0;
+
+	while (s1[i] == s2[i])
+	{
+		if (s1[i] == '\0')
+			return (0);
+		i++;
+	}
+
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
+
 /**
  * my_strncmp - function similar to library strnmcp
  * @s1: first NULL terminated string to compare
  * @s2: second NULL terminated string to compare with
  * @n: The maximum number of characters to compare
  * Return: 0 if equal, negative value if s1 > s2, positive otherwise
-*/
+ */
 int my_strncmp(const char *s1, const char *s2, size_t n)
 {
 	size_t i;

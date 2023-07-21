@@ -49,7 +49,6 @@ void cmd_exit(CommandList *cmd, int index)
 
 	if (arg->count == 1)
 	{
-		cmd->status = 0;
 		cmd->runarg = 1;
 	}
 	else if (arg->count == 2)
@@ -70,15 +69,6 @@ void cmd_exit(CommandList *cmd, int index)
 		}
 		cmd->runarg = 1;
 		return;
-	}
-	else
-	{
-		if (arg->arguments[arg->count] && my_strncmp(arg->arguments[arg->count]
-		, "exit", 4) == 0)
-		{
-			cmd->status = 2;
-			cmd->runarg = 1;
-		}
 	}
 }
 
@@ -153,6 +143,7 @@ void cmd_cd(CommandList *cmd, int index)
 		if (path)
 		{
 			my_puts(path + '\0');
+			my_putchar('\n');
 		}
 		else
 		{

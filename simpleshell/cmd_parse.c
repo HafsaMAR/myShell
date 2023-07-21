@@ -27,6 +27,7 @@ int parse_cmd(char *command_line, CommandList *commandlist)
 	}
 	tokenizeCommands(command_line, commandlist);
 	cmd_check(commandlist);
+	freeCommand(commandlist->commands);
 	return (commandlist->runarg);
 }
 
@@ -68,4 +69,55 @@ void tokenizeCommands(char *input, CommandList *commandList)
 			commandList->commands[commandList->count++] = command;
 		}
 	}
+}
+/**
+ * is_alias - checks if the command is predefined as an aliase
+ * @cmdlist: structure containing all the info of shell
+ * @i: index of the command in the CommandList structure
+ * Return: void
+ */
+void is_alias(CommandList *cmdlist, int i)
+{
+	int j;
+	Alias *alias = cmdlist->aliases;
+	Command cmd = cmdlist->commands[i];
+
+	for (j = 0; j < cmdlist->num_aliases; i++)
+	{
+		if (alias[i].aliasname != NULL && my_strcmp(alias[i].aliasname,
+		cmd.arguments[0]) == 0)
+		{
+			cmd.arguments[0] = my_realloc(cmd.arguments[0],
+			my_strlen(alias[i].value), my_strlen(cmd.arguments[0]));
+			cmd.arguments[0] = my_strdup(alias[i].value);
+			break;
+		}
+	}
+}
+
+/**
+ * logical_check - checks the logical execution of the commands
+ * @cmdlist: structure storing info of the shell
+ * @ret: status of the prevous executed command
+ * @index: the index of the previously executed command
+ * Return: the index of the command to be executed
+*/
+
+int logical_check(CommandList *cmdlist, int ret, int index)
+{
+	int j = index;
+
+	if (cmdlist->command_check[j] == 1 && ret == 0)
+	{
+		while (cmdlist->command_check[j] == 1)
+			j++;
+	}
+	if (cmdlist->command_check[j] == 2 && ret != 0)
+	{
+		while (cmdlist->command_check[j] == 2)
+		{
+			j++;
+		}
+	}
+	return (j);
 }

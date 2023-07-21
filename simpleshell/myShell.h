@@ -81,7 +81,8 @@ struct builtin
 /**********************CMD_PARSE**********************/
 int parse_cmd(char *command_line, CommandList *commandlist);
 void tokenizeCommands(char *input, CommandList *commandList);
-
+void is_alias(CommandList *cmdlist, int i);
+int logical_check(CommandList *cmdlist, int ret, int index);
 
 /***********************CMD_EXEC***********************/
 char *special_char_check(char *argtoken, CommandList *Commandlist);
@@ -128,6 +129,7 @@ char *myStrtok_r(char *str, char *delimiters,
 char **save_ptr, int *check_command);
 char *my_strcpy(char *d, const char *s);
 int my_strncmp(const char *s1, const char *s2, size_t n);
+int my_strcmp(char *s1, char *s2);
 
 /******************STR_MANIPULATION3******************/
 char *my_strncpy(char *dest, char *src, size_t n);

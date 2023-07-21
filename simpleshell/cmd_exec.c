@@ -96,6 +96,8 @@ char *is_command(CommandList *commandlist, int i)
 	command = &commandlist->commands[i];
 	if (command->count == 0)
 		return (NULL);
+
+	is_alias(commandlist, i);
 	cmd = my_strdup(command->arguments[0]);
 	command_check = command_path(cmd);
 	if (stat(cmd, &st) == 0)
@@ -171,7 +173,6 @@ void cmd_check(CommandList *cmdlist)
 				}
 				else
 				{
-					free(command_path);
 					wait(&wstatus);
 					if (WIFEXITED(wstatus))
 						cmdlist->status = WEXITSTATUS(wstatus);
@@ -183,9 +184,7 @@ void cmd_check(CommandList *cmdlist)
 				cmdlist->status = 127;
 			}
 		}
-		if (cmdlist->command_check[i] == 2 && command_path == NULL)
-			i++;
-		else if (cmdlist->command_check[i] == 1 && command_path != NULL)
-			i++;
+		i = logical_check(cmdlist, cmdlist->status, i);
+		free(command_path);
 	}
 }

@@ -2,7 +2,7 @@
 
 /**
  * main - Entry point
- * Return : exit code of the function executed
+ * Return: exit code of the function executed
 */
 int main(void)
 {
