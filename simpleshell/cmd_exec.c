@@ -61,18 +61,14 @@ char *command_path(char *cmd)
 		my_strcat(command_pathcpy, cmd);
 		if (stat(command_pathcpy, &status) == 0)
 		{
-			if (pathcpy != NULL)
-			{
-				free(pathcpy);
-			}
+			free(pathcpy);
+			pathcpy = NULL;
 			return (command_pathcpy);
 		}
 		command_path = myStrtok(NULL, ":");
 	}
-	if (pathcpy)
-	{
-		free(pathcpy);
-	}
+	free(pathcpy);
+	pathcpy = NULL;
 	if (command_pathcpy)
 		free(command_pathcpy);
 	return (NULL);
@@ -96,7 +92,6 @@ char *is_command(CommandList *commandlist, int i)
 	command = &commandlist->commands[i];
 	if (command->count == 0)
 		return (NULL);
-
 	is_alias(commandlist, i);
 	cmd = my_strdup(command->arguments[0]);
 	command_check = command_path(cmd);
