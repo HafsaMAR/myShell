@@ -23,7 +23,6 @@ int main(void)
 		if (command_prompt[my_strlen(command_prompt) - 1] == '\n')
 			command_prompt[my_strlen(command_prompt) - 1] = '\0';
 		check = parse_cmd(command_prompt, &commandlist);
-
 		if (check == 1)
 			break;
 		if (isatty(STDIN_FILENO))
@@ -31,6 +30,5 @@ int main(void)
 	}
 	freeCommandList(&commandlist);
 	free(command_prompt);
-
 	return (commandlist.status);
 }

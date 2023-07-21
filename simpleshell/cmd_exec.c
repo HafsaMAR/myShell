@@ -35,6 +35,8 @@ char *special_char_check(char *argtoken, CommandList *Commandlist)
 				argtoken = "";
 		}
 	}
+	else if (my_strcmp(argtoken, "\\$") == 0)
+		argtoken = "$";
 	return (argtoken);
 }
 
@@ -69,8 +71,7 @@ char *command_path(char *cmd)
 	}
 	free(pathcpy);
 	pathcpy = NULL;
-	if (command_pathcpy)
-		free(command_pathcpy);
+	free(command_pathcpy);
 	return (NULL);
 }
 
