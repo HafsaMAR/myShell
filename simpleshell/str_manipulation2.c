@@ -88,6 +88,13 @@ char *my_strcpy(char *d, const char *s)
 	return (d);
 }
 
+/**
+ * my_strcmp - function similar to library strnmcp
+ * @s1: first NULL terminated string to compare
+ * @s2: second NULL terminated string to compare with
+ * Return: 0 if equal, negative value if s1 > s2, positive otherwise
+ */
+
 int my_strcmp(char *s1, char *s2)
 {
 	size_t i = 0;
