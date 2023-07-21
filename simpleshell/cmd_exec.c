@@ -169,7 +169,10 @@ void cmd_check(CommandList *cmdlist)
 				{
 					ret = execve(command_path, cmd->arguments, environ);
 					if (ret == -1)
+					{
+						free(command_path);
 						_exit(ret);
+					}
 				}
 				else
 				{
