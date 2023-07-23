@@ -88,8 +88,8 @@ void is_alias(CommandList *cmdlist, int i)
 		cmd.arguments[0]) == 0)
 		{
 			cmd.arguments[0] = my_realloc(cmd.arguments[0],
-			my_strlen(alias[i].value), my_strlen(cmd.arguments[0]));
-			cmd.arguments[0] = my_strdup(alias[i].value);
+			my_strlen(alias[i].value) + 1, my_strlen(cmd.arguments[0]));
+			my_strcpy(cmd.arguments[0], alias[i].value);
 			break;
 		}
 	}

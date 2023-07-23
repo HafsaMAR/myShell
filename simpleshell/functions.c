@@ -25,7 +25,7 @@ char *_getenv(char *variable, CommandList *cmd)
  * _itoa - function that convert from int to array
  * @num: int num to convert
  * Return: string result
-*/
+ */
 char *_itoa(int num)
 {
 	int sign = (num < 0) ? -1 : 1;
@@ -34,7 +34,8 @@ char *_itoa(int num)
 
 	num *= sign;
 	temp = num;
-	do {
+	do
+	{
 		len++;
 		temp /= 10;
 	} while (temp > 0);
@@ -74,7 +75,7 @@ char *_itoa(int num)
  * @new_size: new size of the object pointed to by ptr
  * @old_size: it old size
  * Return: pointer to the new object which size is reallocated
-*/
+ */
 void *my_realloc(void *ptr, size_t new_size, size_t old_size)
 {
 	void *new_ptr;
@@ -100,7 +101,8 @@ void *my_realloc(void *ptr, size_t new_size, size_t old_size)
 	{
 		dest[i] = src[i];
 	}
-	free(ptr);
+	if (ptr)
+		free(ptr);
 	return (new_ptr);
 }
 
@@ -108,7 +110,7 @@ void *my_realloc(void *ptr, size_t new_size, size_t old_size)
  * _atoi - function similar to atoi
  * @str: string to be converted to number
  * Return: number
-*/
+ */
 int _atoi(char *str)
 {
 	int result = 0;

@@ -30,14 +30,13 @@ char *my_strncpy(char *dest, char *src, size_t n)
 
 char *my_strdup(char *str)
 {
-	size_t len = my_strlen(str);
 	char *dup_str;
 
 	if (str == NULL)
 	{
 		return (NULL);
 	}
-	dup_str = malloc((len + 1) * sizeof(char));
+	dup_str = malloc(my_strlen(str) + 1);
 	if (dup_str == NULL)
 	{
 		return (NULL);
