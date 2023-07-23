@@ -58,6 +58,8 @@ void tokenizeCommands(char *input, CommandList *commandList)
 			{
 				argToken = special_char_check(argToken, commandList);
 				command.arguments[command.count++] = my_strdup(argToken);
+				if (argToken[0] == '$')
+					free(argToken);
 			}
 			argToken = myStrtok(NULL, " ");
 		}
@@ -101,7 +103,7 @@ void is_alias(CommandList *cmdlist, int i)
  * @ret: status of the prevous executed command
  * @index: the index of the previously executed command
  * Return: the index of the command to be executed
-*/
+ */
 
 int logical_check(CommandList *cmdlist, int ret, int index)
 {

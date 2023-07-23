@@ -107,8 +107,7 @@ char *is_command(CommandList *commandlist, int i)
 		return (command_check);
 	}
 	free(cmd);
-	if (command_check)
-		free(command_check);
+	free(command_check);
 	return (NULL);
 }
 
